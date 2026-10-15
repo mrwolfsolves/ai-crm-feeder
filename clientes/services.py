@@ -1,4 +1,9 @@
 from .models import Cliente
+import os
+from dotenv import load_dotenv
+import requests
+
+load_dotenv()
 
 def mapear_cliente(cliente):
     payload = {
@@ -15,7 +20,15 @@ def mapear_cliente(cliente):
 
     return payload
 
-
+def enviar_cliente(payload):
+    espocrm_url = os.getenv("espocrm_url")
+    espocrm_api_key = os.getenv("espocrm_api_key")
+    headers = {
+        "x-api-key": espocrm_api_key,
+    }
+    response = requests.post(espocrm_url, json=payload, headers=headers)
+    if response.status_code == 201:
+        print('good')
 
 
 
