@@ -7,7 +7,7 @@
 | Account Black                            | accountBlack                          | Link One                 |
 | Account Elite Planet                     | accountElitePlanet                    | Link One                 |
 | Account ID                               | accountID                             | Number (auto-increment)  |
-| Does the Credit Limit apply?             | aplicaLimite                          | Boolean                  |
+| Does the Credit Limit apply?             | aplicaLimite              ❌            | Boolean                  |
 | Assigned User                            | assignedUser                          | Link                     |
 | Usuarios Asignados                       | assignedUsers                         | Link Multiple            |
 | Billing Address                          | billingAddress                        | Address                  |
@@ -17,27 +17,27 @@
 | Postal Code                              | billingAddressPostalCode              | Varchar                  |
 | State                                    | billingAddressState                   | Varchar                  |
 | Street                                   | billingAddressStreet                  | Text                     |
-| Business Partner Code SAP                | businessPartnerCodeSAP                | Varchar                  |
-| Delivery Addresses                       | cCDireccionEntregas                   | Link Multiple            |
-| cCDireccionEntregas1                     | cCDireccionEntregas1                  | Link Multiple            |
-| cCDireccionEntregas2                     | cCDireccionEntregas2                  | Link Multiple            |
-| Help Desk                                | cCMesaDeAyudas                        | Link Multiple            |
-| Deactivated Account                      | cCuentaDesactivada                    | Boolean                  |
-| Prospect                                 | cProspecto                            | Link                     |
+| Business Partner Code SAP                | businessPartnerCodeSAP    ⁉️            | Varchar                  |
+| Delivery Addresses                       | cCDireccionEntregas       ❌            | Link Multiple            |
+| cCDireccionEntregas1                     | cCDireccionEntregas1      ❌            | Link Multiple            |
+| cCDireccionEntregas2                     | cCDireccionEntregas2      ❌            | Link Multiple            |
+| Help Desk                                | cCMesaDeAyudas            ❌            | Link Multiple            |
+| Deactivated Account                      | cCuentaDesactivada       ❌             | Boolean                  |
+| Prospect                                 | cProspecto               ❌             | Link                     |
 | Campaign                                 | campaign                              | Link                     |
-| Registration Cancellation                | cancelacionRegistros                  | Link Multiple            |
-| Amount Limit (USD)                       | cantidadLimiteUSD                     | Currency                 |
+| Registration Cancellation                | cancelacionRegistros        ❌          | Link Multiple            |
+| Amount Limit (USD)                       | cantidadLimiteUSD              ❌       | Currency                 |
 | Amount Limit (USD) (Converted)           | cantidadLimiteUSDConverted            | Currency (Converted)     |
 | Amount Limit (USD) (Currency)            | cantidadLimiteUSDCurrency             | Enum                     |
-| Client                                   | cliente                               | Link                     |
+| Client                                   | cliente                  ❌             | Link                     |
 | Registro Cobranza                        | collectionBatch                       | Link One                 |
 | Portal de Cobranza                       | collectionPortal                      | Link                     |
-| Comments Documents Delivery              | comentariosDocs                       | Text                     |
+| Comments Documents Delivery              | comentariosDocs          ❌             | Text                     |
 | Company                                  | company                               | Link                     |
 | Inactive                                 | contactIsInactive                     | Boolean                  |
 | Title                                    | contactRole                           | Varchar                  |
 | contacts                                 | contacts                              | Link Multiple            |
-| Contracts                                | contratos                             | Link Multiple            |
+| Contracts                                | contratos                 ❌            | Link Multiple            |
 | Created At                               | createdAt                             | Date-Time                |
 | Created By                               | createdBy                             | Link                     |
 | Credit                                   | credit                                | Link One                 |
@@ -47,54 +47,54 @@
 | Delivery Stops                           | deliveryStops                         | Link Multiple            |
 | Description                              | description                           | Text                     |
 | Devices                                  | deviceses                             | Link Multiple            |
-| documentation                            | documentacin                          | Attachment Multiple      |
+| documentation                            | documentacin           ❌               | Attachment Multiple      |
 | Delivery Documents                       | documentsOfDelivery                   | Link Multiple            |
 | Electronic Address Identifier            | electronicAddressIdentifier           | Varchar                  |
 | Electronic Address Scheme                | electronicAddressScheme               | Enum                     |
 | Email                                    | emailAddress                          | Email                    |
 | Email Address is Invalid                 | emailAddressIsInvalid                 | Boolean                  |
 | Email Address is Opted-Out               | emailAddressIsOptedOut                | Boolean                  |
-| Supplier Invoice                         | facturasProveedor                     | Link One                 |
+| Supplier Invoice                         | facturasProveedor        ❌             | Link One                 |
 | Fiscal Stimulus                          | fiscalStimulus                        | Link                     |
-| Warranties                               | garantias                             | Link Multiple            |
-| Gestion De Cobranzas                     | gestionDeCobranzas                    | Link Multiple            |
-| Business Group                           | grupoEmpresarial                      | Link                     |
+| Warranties                               | garantias                 ❌            | Link Multiple            |
+| Gestion De Cobranzas                     | gestionDeCobranzas       ❌             | Link Multiple            |
+| Business Group                           | grupoEmpresarial         ❌             | Link                     |
 | Industry                                 | industry                              | Enum                     |
 | Invoices Third-party                     | invoicesThirdParty                    | Link Multiple            |
 | Month Closings                           | itemList                              | Json Array               |
 | Contacts to Notification                 | itemList2                             | Json Array               |
 | Documents for Delivery                   | listDocuments                         | Checklist                |
 | Logo account                             | logoAccount                           | Image                    |
-| Payment Method                           | metodoPago                            | Enum                     |
+| Payment Method                           | metodoPago            ❌                | Enum                     |
 | Modified At                              | modifiedAt                            | Date-Time                |
 | Modified By                              | modifiedBy                            | Link                     |
 | Name                                     | name                                  | Varchar                  |
 | Ordering instructions                    | orderingInstructions                  | Text                     |
 | Original Lead                            | originalLead                          | Link One                 |
-| Pago Proveedor                           | pagoProveedor                         | Link One                 |
-| Orders                                   | pedidos                               | Link Multiple            |
+| Pago Proveedor                           | pagoProveedor            ❌             | Link One                 |
+| Orders                                   | pedidos                  ❌             | Link Multiple            |
 | Phone                                    | phoneNumber                           | Phone                    |
 | Phone Number is Invalid                  | phoneNumberIsInvalid                  | Boolean                  |
 | Phone Number is Opted-Out                | phoneNumberIsOptedOut                 | Boolean                  |
 | Pick Sheet Supply Alerts                 | pickSheetSupplyAlerts                 | Link Multiple            |
-| Policies                                 | polizas                               | Link Multiple            |
+| Policies                                 | polizas                   ❌            | Link Multiple            |
 | Price Book                               | priceBook                             | Link                     |
 | Product Adquisitions                     | productAdquisitions                   | Link Multiple            |
 | Product Acquisitions                     | productAdquisitionsAccount            | Link Multiple            |
-| Link Test                                | pruebaEnlace                          | Link                     |
+| Link Test                                | pruebaEnlace                  ❌        | Link                     |
 | quoterIntegrationConfigContacts          | quoterIntegrationConfigContacts       | Link Multiple            |
 | Quotes                                   | quotes                                | Link Multiple            |
-| RFC                                      | rFC                                   | Varchar                  |
-| Request for Quotation                    | razonSocial                           | Link Multiple            |
-| Tax Regime                               | regimenFiscal                         | Multi-Enum               |
-| Tax Regime                               | regimenFiscalLista                    | Enum                     |
-| Payment Record                           | registroDePagos                       | Link Multiple            |
-| Remisiones                               | remisiones                            | Link Multiple            |
+| RFC                                      | rFC                   ❌                | Varchar                  |
+| Request for Quotation                    | razonSocial           ❌                | Link Multiple            |
+| Tax Regime                               | regimenFiscal         ❌                | Multi-Enum               |
+| Tax Regime                               | regimenFiscalLista      ❌              | Enum                     |
+| Payment Record                           | registroDePagos        ❌               | Link Multiple            |
+| Remisiones                               | remisiones                   ❌         | Link Multiple            |
 | Reward                                   | reward                                | Link                     |
 | Sales Orders Third Party                 | salesOrderThirdParty                  | Link Multiple            |
-| Sede Cuentas                             | sedeCuentas                           | Link Multiple            |
-| Servicios1                               | servicios1                            | Link Multiple            |
-| Servicios Facturados                     | servicios12                           | Link Multiple            |
+| Sede Cuentas                             | sedeCuentas             ❌              | Link Multiple            |
+| Servicios1                               | servicios1             ❌               | Link Multiple            |
+| Servicios Facturados                     | servicios12            ❌               | Link Multiple            |
 | Shipping Address                         | shippingAddress                       | Address                  |
 | City (Shipping)                          | shippingAddressCity                   | Varchar                  |
 | Country (Shipping)                       | shippingAddressCountry                | Varchar                  |
@@ -103,17 +103,17 @@
 | State (Shipping)                         | shippingAddressState                  | Varchar                  |
 | Street (Shipping)                        | shippingAddressStreet                 | Text                     |
 | Sic Code                                 | sicCode                               | Varchar                  |
-| Payment Request                          | solicitudPagos                        | Link Multiple            |
+| Payment Request                          | solicitudPagos        ❌                | Link Multiple            |
 | Status                                   | status                                | Enum                     |
 | Subsidiaries                             | subsidiaries                          | Link Multiple            |
-| Task Services                            | tareaServicios                        | Link Multiple            |
+| Task Services                            | tareaServicios         ❌               | Link Multiple            |
 | Target List                              | targetList                            | Link                     |
 | Is Opted Out (Target List)               | targetListIsOptedOut                  | Boolean                  |
 | Target Lists                             | targetLists                           | Link Multiple            |
 | Teams                                    | teams                                 | Link Multiple            |
-| Payment Terms                            | terminosDePago                        | Enum                     |
-| Currency Type                            | tipoMoneda                            | Enum                     |
-| Type of Person                           | tipoPersona                           | Enum                     |
+| Payment Terms                            | terminosDePago         ❌               | Enum                     |
+| Currency Type                            | tipoMoneda             ❌               | Enum                     |
+| Type of Person                           | tipoPersona            ❌               | Enum                     |
 | Trade Names                              | tradeName                             | Array                    |
 | Trade Name                               | tradeNameText                         | Varchar                  |
 | Type                                     | type                                  | Enum                     |
@@ -136,7 +136,7 @@
 | Title                                    | accountRole                           | Varchar                  |
 | Account Type                             | accountType                           | Foreign                  |
 | Accounts                                 | accounts                              | Link Multiple            |
-| Activación Cliente                       | activacionCliente                     | Enum                     |
+| Activación Cliente                       | activacionCliente           ❌          | Enum                     |
 | Address                                  | address                               | Address                  |
 | City                                     | addressCity                           | Varchar                  |
 | Country                                  | addressCountry                        | Varchar                  |
@@ -147,57 +147,57 @@
 | Assigned User                            | assignedUser                          | Link                     |
 | Users Assigned                           | assignedUsers                         | Link Multiple            |
 | Contact Status                           | cCEstadoCli                           | Enum                     |
-| Help Desk                                | cCMesaDeAyudas                        | Link Multiple            |
-| Email (Account)                          | cCRazonCorreo                         | Varchar                  |
-| Contact Deactivated                      | cContactoDesactivado                  | Boolean                  |
-| Documentation                            | cDocumentacion                        | Attachment Multiple      |
-| Commercial Name                          | cNombreComercial                      | Text                     |
-| Purchase Order                           | cOrdenCompra                          | Link Multiple            |
-| New Company Name                         | cRaznSocial                           | Array                    |
-| Phone (Account)                          | cRazonTelefonoP                       | Varchar                  |
-| Department                               | cTipoDeContacto                       | Enum                     |
+| Help Desk                                | cCMesaDeAyudas            ❌            | Link Multiple            |
+| Email (Account)                          | cCRazonCorreo             ❌            | Varchar                  |
+| Contact Deactivated                      | cContactoDesactivado      ❌            | Boolean                  |
+| Documentation                            | cDocumentacion            ❌            | Attachment Multiple      |
+| Commercial Name                          | cNombreComercial          ❌            | Text                     |
+| Purchase Order                           | cOrdenCompra              ❌            | Link Multiple            |
+| New Company Name                         | cRaznSocial               ❌            | Array                    |
+| Phone (Account)                          | cRazonTelefonoP           ❌            | Varchar                  |
+| Department                               | cTipoDeContacto           ❌            | Enum                     |
 | Campaign                                 | campaign                              | Link                     |
-| Contact Category                         | categoriaContacto                     | Enum                     |
-| Client                                   | cliente                               | Link                     |
-| Clients                                  | clientes                              | Link                     |
-| Clients                                  | clientess                             | Link                     |
+| Contact Category                         | categoriaContacto         ❌            | Enum                     |
+| Client                                   | cliente                   ❌            | Link                     |
+| Clients                                  | clientes                  ❌            | Link                     |
+| Clients                                  | clientess                 ❌            | Link                     |
 | Registro Cobranzas                       | collectionBatch                       | Link                     |
 | Portal de Cobranza                       | collectionPortal                      | Link                     |
 | Portal Cobranza                          | collectionPortalAP                    | Link One                 |
 | Collection Portal Buyer                  | collectionPortalBuyer                 | Link One                 |
 | Collection Portal Calidad                | collectionPortalCalidad               | Link One                 |
 | Collection Portal Receiving              | collectionPortalReceiving             | Link One                 |
-| Collection Portal Tesoreria              | collectionPortalTesoreria             | Link One                 |
+| Collection Portal Tesoreria              | collectionPortalTesoreria    ❌         | Link One                 |
 | Company                                  | company                               | Link                     |
 | Contact Black                            | contactBlack                          | Link One                 |
 | Contact Elite Planet                     | contactElitePlanet                    | Link One                 |
 | Nombre Contactos                         | contactNames                          | Varchar                  |
 | Parent Contact                           | contactParent                         | Link                     |
 | Children Contacts                        | contacts                              | Link Multiple            |
-| Contracts                                | contratos                             | Link Multiple            |
+| Contracts                                | contratos                    ❌         | Link Multiple            |
 | Created At                               | createdAt                             | Date-Time                |
 | Created By                               | createdBy                             | Link                     |
 | Credit Application                       | creditApp                             | Link Multiple            |
 | Credit Application                       | creditApplication                     | Link Multiple            |
 | Credit Requests                          | creditRequests                        | Link Multiple            |
 | Delivery Orders                          | deliveryOrders                        | Link Multiple            |
-| Delivery OrdersReceived By               | deliveryOrdersRecibidoPor             | Link Multiple            |
-| Delivery Stops                           | deliveryStops                         | Link Multiple            |
+| Delivery OrdersReceived By               | deliveryOrdersRecibidoPor              | Link Multiple            |
 | Description                              | description                           | Text                     |
-| Division                                 | division                              | Multi-Enum               |
+| Division                                 | division                              | | Link Multiple            |
+| Delivery Stops                           | deliveryStops                        Multi-Enum               |
 | Do Not Call                              | doNotCall                             | Boolean                  |
 | Email                                    | emailAddress                          | Email                    |
 | Email Address is Invalid                 | emailAddressIsInvalid                 | Boolean                  |
 | Email Address is Opted-Out               | emailAddressIsOptedOut                | Boolean                  |
-| Email Notifications                      | emailAddressNotification              | Multi-Enum               |
+| Email Notifications                      | emailAddressNotification       ❌       | Multi-Enum               |
 | First Name                               | firstName                             | Varchar                  |
-| Warranties                               | garantias                             | Link Multiple            |
+| Warranties                               | garantias                  ❌           | Link Multiple            |
 | Has Portal User                          | hasPortalUser                         | Boolean                  |
-| Customer ID                              | idCustomer                            | Number (auto-increment)  |
+| Customer ID                              | idCustomer                ❌            | Number (auto-increment)  |
 | InternalCodeSAP                          | internalCodeSAP                       | Varchar                  |
 | Invoices                                 | invoicesEnviarFactura                 | Link Multiple            |
 | Last Name                                | lastName                              | Varchar                  |
-| Contact Medium                           | medioDeContacto                       | Multi-Enum               |
+| Contact Medium                           | medioDeContacto           ❌            | Multi-Enum               |
 | Middle Name                              | middleName                            | Varchar                  |
 | Modified At                              | modifiedAt                            | Date-Time                |
 | Modified By                              | modifiedBy                            | Link                     |
@@ -205,13 +205,13 @@
 | Opportunity Role                         | opportunityRole                       | Enum                     |
 | Original Email                           | originalEmail                         | Link                     |
 | Original Lead                            | originalLead                          | Link One                 |
-| Orders                                   | pedidos                               | Link Multiple            |
+| Orders                                   | pedidos                  ❌             | Link Multiple            |
 | Phone                                    | phoneNumber                           | Phone                    |
 | Phone Number is Invalid                  | phoneNumberIsInvalid                  | Boolean                  |
 | Phone Number is Opted-Out                | phoneNumberIsOptedOut                 | Boolean                  |
-| Telefono Notificaciones                  | phoneNumberNotification               | Multi-Enum               |
+| Telefono Notificaciones                  | phoneNumberNotification     ❌          | Multi-Enum               |
 | pickSheetSupplyAlert3Items               | pickSheetSupplyAlert3Items            | Link Multiple            |
-| Policies                                 | polizas                               | Link Multiple            |
+| Policies                                 | polizas                 ❌              | Link Multiple            |
 | Portal User                              | portalUser                            | Link One                 |
 | PrincipalAccount                         | principalAccount                      | Text                     |
 | productAdquisition2Items                 | productAdquisition2Items              | Link Multiple            |
@@ -231,9 +231,9 @@
 | Sales Orders                             | salesOrdersEnviarFactura              | Link Multiple            |
 | Sales Orders (Shippings)                 | salesOrderscto                        | Link Multiple            |
 | Salutation                               | salutationName                        | Enum                     |
-| Services1                                | servicios2                            | Link Multiple            |
-| Request for Quotation                    | solicitarCotizacions                  | Link Multiple            |
-| Solicitar Cotizacion                     | solicitarCotizacionsSolicitante       | Link Multiple            |
+| Services1                                | servicios2              ❌              | Link Multiple            |
+| Request for Quotation                    | solicitarCotizacions       ❌           | Link Multiple            |
+| Solicitar Cotizacion                     | solicitarCotizacionsSolicitante   ❌    | Link Multiple            |
 | Target List                              | targetList                            | Link                     |
 | Is Opted Out (Target List)               | targetListIsOptedOut                  | Boolean                  |
 | Target Lists                             | targetLists                           | Link Multiple            |
@@ -272,28 +272,28 @@
 | State                                    | addressState                          | Varchar                  |
 | Street                                   | addressStreet                         | Text                     |
 | Assigned User                            | assignedUser                          | Link                     |
-| Help Desk                                | cCMesaDeAyudas                        | Link Multiple            |
-| Manufacturer Account                     | cCuentas                              | Link Multiple            |
-| Lead Deactivated                         | cPropsectoDesactivado                 | Boolean                  |
+| Help Desk                                | cCMesaDeAyudas       ❌                 | Link Multiple            |
+| Manufacturer Account                     | cCuentas             ❌                 | Link Multiple            |
+| Lead Deactivated                         | cPropsectoDesactivado   ❌              | Boolean                  |
 | Campaign                                 | campaign                              | Link                     |
-| Cancelacion Registros                    | cancelacionRegistros                  | Link Multiple            |
-| Additional Contact                       | contactoAdicional                     | Varchar                  |
+| Cancelacion Registros                    | cancelacionRegistros    ❌              | Link Multiple            |
+| Additional Contact                       | contactoAdicional       ❌              | Varchar                  |
 | Converted At                             | convertedAt                           | Date-Time                |
 | Account                                  | createdAccount                        | Link                     |
 | Created At                               | createdAt                             | Date-Time                |
 | Created By                               | createdBy                             | Link                     |
 | Contact                                  | createdContact                        | Link                     |
 | Opportunity                              | createdOpportunity                    | Link                     |
-| Fecha de Asignación                      | dateAssigned                          | Date-Time                |
+| Fecha de Asignación                      | dateAssigned       ❌                   | Date-Time                |
 | Description                              | description                           | Text                     |
 | Do Not Call                              | doNotCall                             | Boolean                  |
 | Email                                    | emailAddress                          | Email                    |
 | Email Address is Invalid                 | emailAddressIsInvalid                 | Boolean                  |
 | Email Address is Opted-Out               | emailAddressIsOptedOut                | Boolean                  |
-| Primary Email Address                    | emailP                                | Varchar                  |
-| emailPrincipales                         | emailPrincipales                      | Multi-Enum               |
+| Primary Email Address                    | emailP                   ❌             | Varchar                  |
+| emailPrincipales                         | emailPrincipales         ❌             | Multi-Enum               |
 | First Name                               | firstName                             | Varchar                  |
-| Business Line                            | giroEmpresarial                       | Enum                     |
+| Business Line                            | giroEmpresarial         ❌              | Enum                     |
 | Industry                                 | industry                              | Enum                     |
 | Last Name                                | lastName                              | Varchar                  |
 | Middle Name                              | middleName                            | Varchar                  |
@@ -305,21 +305,21 @@
 | Opportunity Amount (converted)           | opportunityAmountConverted            | Currency (Converted)     |
 | Opportunity Amount Currency              | opportunityAmountCurrency             | Enum                     |
 | Original Email                           | originalEmail                         | Link                     |
-| Another Line                             | otroGiro                              | Varchar                  |
+| Another Line                             | otroGiro                  ❌            | Varchar                  |
 | Phone                                    | phoneNumber                           | Phone                    |
 | Phone Number is Invalid                  | phoneNumberIsInvalid                  | Boolean                  |
 | Phone Number is Opted-Out                | phoneNumberIsOptedOut                 | Boolean                  |
-| Main Phone                               | phoneP                                | Varchar                  |
-| RFC                                      | rfc                                   | Text                     |
+| Main Phone                               | phoneP                   ⁉️             | Varchar                  |
+| RFC                                      | rfc                      ❌             | Text                     |
 | Salutation                               | salutationName                        | Enum                     |
 | Source                                   | source                                | Enum                     |
 | Status                                   | status                                | Enum                     |
-| SubLine                                  | subgiro                               | Varchar                  |
+| SubLine                                  | subgiro                  ❌             | Varchar                  |
 | Target List                              | targetList                            | Link                     |
 | Is Opted Out (Target List)               | targetListIsOptedOut                  | Boolean                  |
 | Target Lists                             | targetLists                           | Link Multiple            |
 | Teams                                    | teams                                 | Link Multiple            |
-| Main Phones                              | telefonosPrincipales                  | Multi-Enum               |
+| Main Phones                              | telefonosPrincipales      ❌            | Multi-Enum               |
 | Title                                    | title                                 | Varchar                  |
 | User                                     | user                                  | Link                     |
 | Website                                  | website                               | Url                      |
