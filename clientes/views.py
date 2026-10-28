@@ -16,5 +16,5 @@ class ClienteViewSet(viewsets.ModelViewSet):
         cliente_mapeado = mapear_cliente(cliente)
         response = enviar_cliente(cliente_mapeado)
 
-        if response.status_code != 201:
+        if response.status_code != 200:
             raise APIException("No se pudo enviar el cliente a EspoCRM")
