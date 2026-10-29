@@ -2,6 +2,7 @@ from .models import Cliente
 import os
 from dotenv import load_dotenv
 import requests
+import re
 
 load_dotenv()
 
@@ -28,3 +29,10 @@ def enviar_cliente(payload):
     }
     response = requests.post(espocrm_url, json=payload, headers=headers)
     return response
+
+def check_repeated_char(word):
+    patron = r"(.)\1{2,}"
+    if word:
+        return bool(re.search(patron, word))
+    else:
+        return False
