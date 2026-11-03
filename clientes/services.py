@@ -28,6 +28,7 @@ def enviar_cliente(payload):
         "x-api-key": espocrm_api_key,
     }
     response = requests.post(espocrm_url, json=payload, headers=headers)
+    
     return response
 
 def check_repeated_char(word):
@@ -36,3 +37,30 @@ def check_repeated_char(word):
         return bool(re.search(patron, word))
     else:
         return False
+
+def corregir_texto_con_ia(texto):
+    openrouter_url = os.getenv("openrouter_url")
+    openrouter_api_key = os.getenv("openrouter_api_key")
+    openrouter_model = os.getenv("openrouter_model")
+
+    headers = {
+        "Authorization": f"Bearer {openrouter_api_key}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": openrouter_model,
+        "messages": [
+            {
+                "role": "user",
+                "content": f"Corrige este texto si tiene errores de tecleo o letras repetidas incorrectamente, como capitalización. Responde ÚNICAMENTE con el texto corregido, sin explicaciones ni comentarios adicionales: {texto}"
+            }
+        ]
+    }
+
+    response = requests.post(openrouter_url, headers=headers, json=payload)
+    data = response.json()
+    texto_corregido = data['choices'][0]['message']['content'].strip()
+
+    return texto_corregido
+
