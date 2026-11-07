@@ -27,7 +27,10 @@ def capturar_cliente(request):
                     cliente.first_name = corregir_texto_con_ia(cliente.first_name)
                 if check_repeated_char(cliente.last_name):
                     cliente.last_name = corregir_texto_con_ia(cliente.last_name)
+                if check_repeated_char(cliente.street):
+                    cliente.street = corregir_texto_con_ia(cliente.street)
                 cliente.save()
+                
 
                 cliente_mapeado = mapear_cliente(cliente)
                 response = enviar_cliente(cliente_mapeado)
@@ -54,7 +57,10 @@ class ClienteViewSet(viewsets.ModelViewSet):
             cliente.first_name = corregir_texto_con_ia(cliente.first_name)
         if check_repeated_char(cliente.last_name):
             cliente.last_name = corregir_texto_con_ia(cliente.last_name)
+        if check_repeated_char(cliente.street):
+            cliente.street = corregir_texto_con_ia(cliente.street)
         cliente.save()
+        
 
         cliente_mapeado = mapear_cliente(cliente)
         response = enviar_cliente(cliente_mapeado)
