@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import re
+import json
 
 load_dotenv()
 
@@ -64,3 +65,55 @@ def corregir_texto_con_ia(texto):
 
     return texto_corregido
 
+def extraer_datos_con_ia(texto):
+    openrouter_url = os.getenv("openrouter_url")
+    openrouter_api_key = os.getenv("openrouter_api_key")
+    openrouter_model = os.getenv("openrouter_model")
+
+    headers = {
+        "Authorization": f"Bearer {openrouter_api_key}",
+        "Content-Type": "application/json",
+    }
+
+    prompt = f"""Extrae los siguientes datos de cliente del texto proporcionado y responde ÚNICAMENTE con un JSON válido, sin explicaciones ni texto adicional, usando exactamente estas llaves:
+
+{{
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "phone_number": "",
+    "street": "",
+    "city": "",
+    "state": "",
+    "postal_code": "",
+    "country": ""
+}}
+
+Si algún dato no se encuentra en el texto, deja el valor como una cadena vacía "".
+
+Texto a analizar:
+{texto}"""
+
+    payload = {
+        "model": openrouter_model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+
+    response = requests.post(openrouter_url, headers=headers, json=payload)
+    data = response.json()
+    contenido = data['choices'][0]['message']['content'].strip()
+
+    if contenido.startswith("```"):
+        contenido = contenido.split("```")[1]
+        if contenido.startswith("json"):
+            contenido = contenido[4:]
+        contenido = contenido.strip()
+
+    datos_extraidos = json.loads(contenido)
+
+    return datos_extraidos
