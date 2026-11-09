@@ -21,39 +21,39 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" name="first_name" required>
+                    <input type="text" class="form-control" name="first_name" value="{{ datos.first_name|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Apellido</label>
-                    <input type="text" class="form-control" name="last_name" required>
+                    <input type="text" class="form-control" name="last_name" value="{{ datos.last_name|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" required>
+                    <input type="email" class="form-control" name="email" value="{{ datos.email|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Teléfono</label>
-                    <input type="text" class="form-control" name="phone_number" required>
+                    <input type="text" class="form-control" name="phone_number" value="{{ datos.phone_number|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Calle</label>
-                    <input type="text" class="form-control" name="street" required>
+                    <input type="text" class="form-control" name="street" value="{{ datos.street|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Ciudad</label>
-                    <input type="text" class="form-control" name="city" required>
+                    <input type="text" class="form-control" name="city" value="{{ datos.city|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" name="state" required>
+                    <input type="text" class="form-control" name="state" value="{{ datos.state|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Código Postal</label>
-                    <input type="text" class="form-control" name="postal_code" required>
+                    <input type="text" class="form-control" name="postal_code" value="{{ datos.postal_code|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">País</label>
-                    <input type="text" class="form-control" name="country" required>
+                    <input type="text" class="form-control" name="country" value="{{ datos.country|default:'' }}" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary mt-4">Capturar Cliente</button>

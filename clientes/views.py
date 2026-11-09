@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .models import Cliente
 from .serializers import ClienteSerializer
-from .services import mapear_cliente, enviar_cliente, check_repeated_char, corregir_texto_con_ia
+from .services import mapear_cliente, enviar_cliente, check_repeated_char, corregir_texto_con_ia, extraer_datos_con_ia
 from django.db import transaction
 from rest_framework.exceptions import APIException
 from django.shortcuts import render, redirect
@@ -27,7 +27,14 @@ def capturar_cliente(request):
                     cliente.first_name = corregir_texto_con_ia(cliente.first_name)
                 if check_repeated_char(cliente.last_name):
                     cliente.last_name = corregir_texto_con_ia(cliente.last_name)
+                if check_repeated_char(cliente.street):
+                    cliente.street = corregir_texto_con_ia(cliente.street)
+                if check_repeated_char(cliente.city):
+                    cliente.city = corregir_texto_con_ia(cliente.city)
+                if check_repeated_char(cliente.state):
+                    cliente.state = corregir_texto_con_ia(cliente.state)
                 cliente.save()
+                
 
                 cliente_mapeado = mapear_cliente(cliente)
                 response = enviar_cliente(cliente_mapeado)
@@ -54,10 +61,29 @@ class ClienteViewSet(viewsets.ModelViewSet):
             cliente.first_name = corregir_texto_con_ia(cliente.first_name)
         if check_repeated_char(cliente.last_name):
             cliente.last_name = corregir_texto_con_ia(cliente.last_name)
+        if check_repeated_char(cliente.street):
+            cliente.street = corregir_texto_con_ia(cliente.street)
+        if check_repeated_char(cliente.city):
+            cliente.city = corregir_texto_con_ia(cliente.city)
+        if check_repeated_char(cliente.state):
+            cliente.state = corregir_texto_con_ia(cliente.state)
         cliente.save()
+        
 
         cliente_mapeado = mapear_cliente(cliente)
         response = enviar_cliente(cliente_mapeado)
 
         if response.status_code != 200:
             raise APIException("No se pudo enviar el cliente a EspoCRM")
+
+def listar_clientes(request):
+    clientes = Cliente.objects.all().order_by("-created_at")
+    return render(request, "clientes/listar_clientes.html", {"clientes": clientes})
+
+def captura_rapida(request):
+    if request.method == "POST":
+        texto = request.POST.get("texto_crudo")
+        datos = extraer_datos_con_ia(texto)
+        return render(request, "clientes/captura_cliente.html", {"datos": datos})
+
+    return render(request, "clientes/captura_rapida.html")
