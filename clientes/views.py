@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .models import Cliente
 from .serializers import ClienteSerializer
-from .services import mapear_cliente, enviar_cliente, check_repeated_char, corregir_texto_con_ia, extraer_datos_con_ia
+from .services import mapear_cliente, enviar_cliente, check_repeated_char, corregir_campos_con_ia, extraer_datos_con_ia
 from django.db import transaction
 from rest_framework.exceptions import APIException
 from django.shortcuts import render, redirect
@@ -23,23 +23,25 @@ def capturar_cliente(request):
                     country=request.POST.get("country"),
                 )
 
-                if check_repeated_char(cliente.first_name):
-                    cliente.first_name = corregir_texto_con_ia(cliente.first_name)
-                if check_repeated_char(cliente.last_name):
-                    cliente.last_name = corregir_texto_con_ia(cliente.last_name)
-                if check_repeated_char(cliente.street):
-                    cliente.street = corregir_texto_con_ia(cliente.street)
-                if check_repeated_char(cliente.city):
-                    cliente.city = corregir_texto_con_ia(cliente.city)
-                if check_repeated_char(cliente.state):
-                    cliente.state = corregir_texto_con_ia(cliente.state)
+                campos_a_revisar = ["first_name", "last_name", "street", "city", "state"]
+                campos_con_error = {
+                    campo: getattr(cliente, campo)
+                    for campo in campos_a_revisar
+                    if check_repeated_char(getattr(cliente, campo))
+                }
+                if campos_con_error:
+                    corregidos = corregir_campos_con_ia(campos_con_error)
+                    for campo, valor in corregidos.items():
+                        setattr(cliente, campo, valor)
                 cliente.save()
                 
 
                 cliente_mapeado = mapear_cliente(cliente)
                 response = enviar_cliente(cliente_mapeado)
 
-                if response.status_code != 200:
+                if response.status_code == 409:
+                    raise APIException("Ya existe un cliente con estos datos (nombre o correo) registrado en el CRM.")
+                elif response.status_code != 200:
                     raise APIException("No se pudo enviar el cliente a EspoCRM")
 
             return render(request, "clientes/captura_cliente.html", {"exito": True})
@@ -57,23 +59,25 @@ class ClienteViewSet(viewsets.ModelViewSet):
         serializer.save()
         cliente = serializer.instance
 
-        if check_repeated_char(cliente.first_name):
-            cliente.first_name = corregir_texto_con_ia(cliente.first_name)
-        if check_repeated_char(cliente.last_name):
-            cliente.last_name = corregir_texto_con_ia(cliente.last_name)
-        if check_repeated_char(cliente.street):
-            cliente.street = corregir_texto_con_ia(cliente.street)
-        if check_repeated_char(cliente.city):
-            cliente.city = corregir_texto_con_ia(cliente.city)
-        if check_repeated_char(cliente.state):
-            cliente.state = corregir_texto_con_ia(cliente.state)
+        campos_a_revisar = ["first_name", "last_name", "street", "city", "state"]
+        campos_con_error = {
+            campo: getattr(cliente, campo)
+            for campo in campos_a_revisar
+            if check_repeated_char(getattr(cliente, campo))
+        }
+        if campos_con_error:
+            corregidos = corregir_campos_con_ia(campos_con_error)
+            for campo, valor in corregidos.items():
+                setattr(cliente, campo, valor)
         cliente.save()
         
 
         cliente_mapeado = mapear_cliente(cliente)
         response = enviar_cliente(cliente_mapeado)
 
-        if response.status_code != 200:
+        if response.status_code == 409:
+            raise APIException("Ya existe un cliente con estos datos (nombre o correo) registrado en el CRM.")
+        elif response.status_code != 200:
             raise APIException("No se pudo enviar el cliente a EspoCRM")
 
 def listar_clientes(request):

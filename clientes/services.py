@@ -29,7 +29,7 @@ def enviar_cliente(payload):
         "x-api-key": espocrm_api_key,
     }
     response = requests.post(espocrm_url, json=payload, headers=headers)
-    
+
     return response
 
 def check_repeated_char(word):
@@ -39,31 +39,45 @@ def check_repeated_char(word):
     else:
         return False
 
-def corregir_texto_con_ia(texto):
+def corregir_campos_con_ia(campos):
+    """
+    campos: dict {nombre_campo: valor} que necesitan corrección.
+    Devuelve un dict con los valores corregidos, mismas llaves.
+    """
     openrouter_url = os.getenv("openrouter_url")
     openrouter_api_key = os.getenv("openrouter_api_key")
     openrouter_model = os.getenv("openrouter_model")
-
     headers = {
         "Authorization": f"Bearer {openrouter_api_key}",
         "Content-Type": "application/json",
     }
+    campos_json = json.dumps(campos, ensure_ascii=False)
+    prompt = f"""Recibirás un JSON con campos de texto que pueden tener errores de tecleo. Corrige cada valor aplicando SOLO estas reglas:
+
+1. Si una letra está repetida de forma excesiva (3 o más veces seguidas) por error de tecleo, colapsa la repetición a la forma normal de la palabra. Ejemplo: "Valdezzzzzzzzzzzz" -> "Valdez".
+2. Pon cada valor en formato Título: la primera letra de cada palabra en mayúscula, y TODAS las demás letras de esa palabra en minúscula, sin importar cómo estén escritas en el texto original. Ejemplo: "ValdeZZZZZZZZZZZZZzzz" -> "Valdez". "baja californiaaaaaaaaaa" -> "Baja California".
+3. No agregues ni quites espacios que no sean parte de la corrección. No inventes información nueva.
+
+Responde ÚNICAMENTE con un JSON válido con exactamente las mismas llaves que recibiste, sin explicaciones ni comentarios adicionales.
+
+JSON a corregir:
+{campos_json}"""
 
     payload = {
         "model": openrouter_model,
-        "messages": [
-            {
-                "role": "user",
-                "content": f"Corrige este texto si tiene errores de tecleo o letras repetidas incorrectamente, como capitalización. Responde ÚNICAMENTE con el texto corregido, sin explicaciones ni comentarios adicionales: {texto}"
-            }
-        ]
+        "messages": [{"role": "user", "content": prompt}]
     }
-
     response = requests.post(openrouter_url, headers=headers, json=payload)
     data = response.json()
-    texto_corregido = data['choices'][0]['message']['content'].strip()
+    contenido = data['choices'][0]['message']['content'].strip()
 
-    return texto_corregido
+    if contenido.startswith("```"):
+        contenido = contenido.split("```")[1]
+        if contenido.startswith("json"):
+            contenido = contenido[4:]
+        contenido = contenido.strip()
+
+    return json.loads(contenido)
 
 def extraer_datos_con_ia(texto):
     openrouter_url = os.getenv("openrouter_url")
