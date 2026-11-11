@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import requests
 import re
 import json
+from rest_framework.exceptions import APIException
 
 load_dotenv()
 
@@ -28,7 +29,10 @@ def enviar_cliente(payload):
     headers = {
         "x-api-key": espocrm_api_key,
     }
-    response = requests.post(espocrm_url, json=payload, headers=headers)
+    try:
+        response = requests.post(espocrm_url, json=payload, headers=headers, timeout=10)
+    except requests.exceptions.RequestException:
+        raise APIException("No se pudo conectar con EspoCRM. Verifica que el servicio esté disponible.")
 
     return response
 
@@ -67,7 +71,10 @@ JSON a corregir:
         "model": openrouter_model,
         "messages": [{"role": "user", "content": prompt}]
     }
-    response = requests.post(openrouter_url, headers=headers, json=payload)
+    try:
+        response = requests.post(openrouter_url, headers=headers, json=payload, timeout=15)
+    except requests.exceptions.RequestException:
+        raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
     contenido = data['choices'][0]['message']['content'].strip()
 
@@ -118,7 +125,10 @@ Texto a analizar:
         ]
     }
 
-    response = requests.post(openrouter_url, headers=headers, json=payload)
+    try:
+        response = requests.post(openrouter_url, headers=headers, json=payload, timeout=15)
+    except requests.exceptions.RequestException:
+        raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
     contenido = data['choices'][0]['message']['content'].strip()
 

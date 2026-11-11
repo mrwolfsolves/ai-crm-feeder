@@ -13,6 +13,9 @@ class Cliente(models.Model):
     postal_code = models.CharField(max_length=10)
     country = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+    enviado_a_crm = models.BooleanField(default=False)
+    correccion_aplicada = models.BooleanField(default=False)
+    valores_originales = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

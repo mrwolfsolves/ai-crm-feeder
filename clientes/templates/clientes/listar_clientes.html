@@ -9,6 +9,32 @@
     <div class="container mt-5">
         <h1 class="mb-4">Clientes Capturados</h1>
         <a href="{% url 'capturar_cliente' %}" class="btn btn-primary mb-3">+ Nuevo Cliente</a>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted">Total de clientes</h6>
+                        <p class="display-6 mb-0">{{ stats.total }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted">Enviados al CRM</h6>
+                        <p class="display-6 mb-0">{{ stats.enviados }} <small class="fs-6 text-muted">({{ stats.porcentaje_enviados }}%)</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted">Con corrección de IA</h6>
+                        <p class="display-6 mb-0">{{ stats.con_correccion }} <small class="fs-6 text-muted">({{ stats.porcentaje_correccion }}%)</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <table class="table table-striped bg-white">
             <thead>
                 <tr>
@@ -18,6 +44,8 @@
                     <th>Teléfono</th>
                     <th>Ciudad</th>
                     <th>Fecha de captura</th>
+                    <th>Enviado a CRM</th>
+                    <th>Corrección IA</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +57,20 @@
                     <td>{{ cliente.phone_number }}</td>
                     <td>{{ cliente.city }}</td>
                     <td>{{ cliente.created_at }}</td>
+                    <td>
+                        {% if cliente.enviado_a_crm %}
+                            <span class="badge bg-success">Sí</span>
+                        {% else %}
+                            <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if cliente.correccion_aplicada %}
+                            <span class="badge bg-info text-dark" title="Antes: {{ cliente.valores_originales }}">Sí</span>
+                        {% else %}
+                            <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
