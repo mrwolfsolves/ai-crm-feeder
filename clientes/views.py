@@ -5,13 +5,14 @@ from .services import mapear_cliente, enviar_cliente, check_repeated_char, corre
 from django.db import transaction
 from rest_framework.exceptions import APIException
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
 
 
 def capturar_cliente(request):
     if request.method == "POST":
         try:
             with transaction.atomic():
-                cliente = Cliente.objects.create(
+                cliente = Cliente(
                     first_name=request.POST.get("first_name"),
                     last_name=request.POST.get("last_name"),
                     email=request.POST.get("email"),
@@ -22,6 +23,8 @@ def capturar_cliente(request):
                     postal_code=request.POST.get("postal_code"),
                     country=request.POST.get("country"),
                 )
+                cliente.full_clean()
+                cliente.save()
 
                 campos_a_revisar = ["first_name", "last_name", "street", "city", "state"]
                 campos_con_error = {
@@ -30,10 +33,11 @@ def capturar_cliente(request):
                     if check_repeated_char(getattr(cliente, campo))
                 }
                 if campos_con_error:
+                    cliente.valores_originales = campos_con_error
+                    cliente.correccion_aplicada = True
                     corregidos = corregir_campos_con_ia(campos_con_error)
                     for campo, valor in corregidos.items():
                         setattr(cliente, campo, valor)
-                cliente.save()
                 
 
                 cliente_mapeado = mapear_cliente(cliente)
@@ -44,7 +48,15 @@ def capturar_cliente(request):
                 elif response.status_code != 200:
                     raise APIException("No se pudo enviar el cliente a EspoCRM")
 
+                cliente.enviado_a_crm = True
+                cliente.save()
+
             return render(request, "clientes/captura_cliente.html", {"exito": True})
+        except ValidationError as e:
+            errores = "; ".join(
+                f"{campo}: {', '.join(mensajes)}" for campo, mensajes in e.message_dict.items()
+            )
+            return render(request, "clientes/captura_cliente.html", {"error": errores})
         except Exception as e:
             return render(request, "clientes/captura_cliente.html", {"error": str(e)})
 
@@ -66,10 +78,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
             if check_repeated_char(getattr(cliente, campo))
         }
         if campos_con_error:
+            cliente.valores_originales = campos_con_error
+            cliente.correccion_aplicada = True
             corregidos = corregir_campos_con_ia(campos_con_error)
             for campo, valor in corregidos.items():
                 setattr(cliente, campo, valor)
-        cliente.save()
         
 
         cliente_mapeado = mapear_cliente(cliente)
@@ -80,9 +93,24 @@ class ClienteViewSet(viewsets.ModelViewSet):
         elif response.status_code != 200:
             raise APIException("No se pudo enviar el cliente a EspoCRM")
 
+        cliente.enviado_a_crm = True
+        cliente.save()
+
 def listar_clientes(request):
     clientes = Cliente.objects.all().order_by("-created_at")
-    return render(request, "clientes/listar_clientes.html", {"clientes": clientes})
+    total = clientes.count()
+    enviados = clientes.filter(enviado_a_crm=True).count()
+    con_correccion = clientes.filter(correccion_aplicada=True).count()
+
+    stats = {
+        "total": total,
+        "enviados": enviados,
+        "porcentaje_enviados": round((enviados / total * 100), 1) if total else 0,
+        "con_correccion": con_correccion,
+        "porcentaje_correccion": round((con_correccion / total * 100), 1) if total else 0,
+    }
+
+    return render(request, "clientes/listar_clientes.html", {"clientes": clientes, "stats": stats})
 
 def captura_rapida(request):
     if request.method == "POST":
