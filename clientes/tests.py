@@ -1,28 +1,33 @@
 from django.test import TestCase
-from .models import Cliente
-from .services import check_repeated_char, mapear_cliente
 from unittest.mock import patch, Mock
-from .services import corregir_campos_con_ia, extraer_datos_con_ia
+from .models import Cliente
+from .services import tiene_anomalia, mapear_cliente, corregir_campos_con_ia, extraer_datos_con_ia
 
-
-class CheckRepeatedCharTests(TestCase):
+class TieneAnomaliaTests(TestCase):
     def test_detecta_tres_o_mas_repeticiones(self):
-        self.assertTrue(check_repeated_char("Valdezzzzzzzzzzzz"))
-        self.assertTrue(check_repeated_char("tijuanaaaaaaa"))
+        self.assertTrue(tiene_anomalia("Valdezzzzzzzzzzzz"))
+        self.assertTrue(tiene_anomalia("tijuanaaaaaaa"))
+
+    def test_detecta_caracteres_invalidos(self):
+        self.assertTrue(tiene_anomalia("Mart[inez"))
+        self.assertTrue(tiene_anomalia("Juan#Perez"))
 
     def test_no_detecta_repeticiones_normales(self):
-        self.assertFalse(check_repeated_char("Pizza"))
-        self.assertFalse(check_repeated_char("Valdez"))
-        self.assertFalse(check_repeated_char("Tijuana"))
+        self.assertFalse(tiene_anomalia("Pizza"))
+        self.assertFalse(tiene_anomalia("Valdez"))
+        self.assertFalse(tiene_anomalia("Tijuana"))
 
     def test_texto_vacio_o_none(self):
-        self.assertFalse(check_repeated_char(""))
-        self.assertFalse(check_repeated_char(None))
+        self.assertFalse(tiene_anomalia(""))
+        self.assertFalse(tiene_anomalia(None))
 
     def test_dos_repeticiones_no_cuentan(self):
-        # el patrón exige 3+, dos letras iguales seguidas no deben marcarse
-        self.assertFalse(check_repeated_char("correo"))
-        self.assertFalse(check_repeated_char("carro"))
+        self.assertFalse(tiene_anomalia("correo"))
+        self.assertFalse(tiene_anomalia("carro"))
+
+    def test_acepta_guiones_y_apostrofes(self):
+        self.assertFalse(tiene_anomalia("Jean-Pierre"))
+        self.assertFalse(tiene_anomalia("O'Brien"))
 
 
 class MapearClienteTests(TestCase):

@@ -1,11 +1,12 @@
 from rest_framework import viewsets
 from .models import Cliente
 from .serializers import ClienteSerializer
-from .services import mapear_cliente, enviar_cliente, check_repeated_char, corregir_campos_con_ia, extraer_datos_con_ia
+from .services import mapear_cliente, enviar_cliente, tiene_anomalia, corregir_campos_con_ia, extraer_datos_con_ia
 from django.db import transaction
 from rest_framework.exceptions import APIException
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 
 def capturar_cliente(request):
@@ -30,7 +31,7 @@ def capturar_cliente(request):
                 campos_con_error = {
                     campo: getattr(cliente, campo)
                     for campo in campos_a_revisar
-                    if check_repeated_char(getattr(cliente, campo))
+                    if tiene_anomalia(getattr(cliente, campo))
                 }
                 if campos_con_error:
                     cliente.valores_originales = campos_con_error
@@ -101,9 +102,18 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
 def listar_clientes(request):
     clientes = Cliente.objects.all().order_by("-created_at")
-    total = clientes.count()
-    enviados = clientes.filter(enviado_a_crm=True).count()
-    con_correccion = clientes.filter(correccion_aplicada=True).count()
+
+    query = request.GET.get("q", "").strip()
+    if query:
+        clientes = clientes.filter(
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(email__icontains=query)
+        )
+
+    total = Cliente.objects.count()
+    enviados = Cliente.objects.filter(enviado_a_crm=True).count()
+    con_correccion = Cliente.objects.filter(correccion_aplicada=True).count()
 
     stats = {
         "total": total,
@@ -113,7 +123,7 @@ def listar_clientes(request):
         "porcentaje_correccion": round((con_correccion / total * 100), 1) if total else 0,
     }
 
-    return render(request, "clientes/listar_clientes.html", {"clientes": clientes, "stats": stats})
+    return render(request, "clientes/listar_clientes.html", {"clientes": clientes, "stats": stats, "query": query})
 
 def captura_rapida(request):
     if request.method == "POST":
@@ -125,3 +135,7 @@ def captura_rapida(request):
             return render(request, "clientes/captura_rapida.html", {"error": str(e)})
 
     return render(request, "clientes/captura_rapida.html")
+
+def detalle_cliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+    return render(request, "clientes/detalle_cliente.html", {"cliente": cliente})
