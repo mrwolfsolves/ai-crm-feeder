@@ -1,63 +1,61 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Captura de Cliente</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <h1 class="mb-4">Captura de Cliente</h1>
+{% extends "clientes/base.html" %}
+{% block title %}Captura de Cliente — CRM Feeder{% endblock %}
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-4"><i class="bi bi-person-plus text-primary"></i> Captura de cliente</h1>
 
-        {% if exito %}
-            <div class="alert alert-success">Cliente capturado y enviado a EspoCRM correctamente.</div>
-        {% endif %}
-        {% if error %}
-            <div class="alert alert-danger">Error: {{ error }}</div>
-        {% endif %}
+            {% if exito %}
+                <div class="alert alert-success"><i class="bi bi-check-circle"></i> Cliente capturado y enviado a EspoCRM correctamente.</div>
+            {% endif %}
+            {% if error %}
+                <div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Error: {{ error }}</div>
+            {% endif %}
 
-        <form method="POST">
-            {% csrf_token %}
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" name="first_name" value="{{ datos.first_name|default:'' }}" required>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" name="first_name" value="{{ datos.first_name|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" class="form-control" name="last_name" value="{{ datos.last_name|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" value="{{ datos.email|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" name="phone_number" value="{{ datos.phone_number|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Calle</label>
+                        <input type="text" class="form-control" name="street" value="{{ datos.street|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" name="city" value="{{ datos.city|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Estado</label>
+                        <input type="text" class="form-control" name="state" value="{{ datos.state|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Código Postal</label>
+                        <input type="text" class="form-control" name="postal_code" value="{{ datos.postal_code|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">País</label>
+                        <input type="text" class="form-control" name="country" value="{{ datos.country|default:'' }}" required>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Apellido</label>
-                    <input type="text" class="form-control" name="last_name" value="{{ datos.last_name|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" value="{{ datos.email|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Teléfono</label>
-                    <input type="text" class="form-control" name="phone_number" value="{{ datos.phone_number|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Calle</label>
-                    <input type="text" class="form-control" name="street" value="{{ datos.street|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Ciudad</label>
-                    <input type="text" class="form-control" name="city" value="{{ datos.city|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" name="state" value="{{ datos.state|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Código Postal</label>
-                    <input type="text" class="form-control" name="postal_code" value="{{ datos.postal_code|default:'' }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">País</label>
-                    <input type="text" class="form-control" name="country" value="{{ datos.country|default:'' }}" required>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary mt-4">Capturar Cliente</button>
-        </form>
+                <button type="submit" class="btn btn-primary mt-4">
+                    <i class="bi bi-cloud-upload"></i> Capturar cliente
+                </button>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+{% endblock %}

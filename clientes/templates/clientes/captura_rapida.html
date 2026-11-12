@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Captura Rápida con IA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <h1 class="mb-4">Captura Rápida (pega el texto del cliente)</h1>
+{% extends "clientes/base.html" %}
+{% block title %}Captura Rápida — CRM Feeder{% endblock %}
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-3"><i class="bi bi-magic text-primary"></i> Captura rápida con IA</h1>
+            <p class="text-muted">Pega el correo, mensaje o notas del cliente y la IA extraerá los datos automáticamente.</p>
 
-        <a href="{% url 'listar_clientes' %}" class="btn btn-link mb-3">← Volver a la lista</a>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
 
-        {% if error %}
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-        {% endif %}
-
-        <form method="POST">
-            {% csrf_token %}
-            <textarea class="form-control mb-3" name="texto_crudo" rows="8" placeholder="Pega aquí el correo, mensaje o notas del cliente..." required></textarea>
-            <button type="submit" class="btn btn-primary">Extraer datos con IA</button>
-        </form>
+            <form method="POST">
+                {% csrf_token %}
+                <textarea class="form-control mb-3" name="texto_crudo" rows="8" placeholder="Pega aquí el correo, mensaje o notas del cliente..." required></textarea>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-stars"></i> Extraer datos con IA
+                </button>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+{% endblock %}
