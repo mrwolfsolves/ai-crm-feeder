@@ -65,6 +65,9 @@ def capturar_cliente(request):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    filterset_fields = ["city", "state", "enviado_a_crm", "correccion_aplicada"]
+    search_fields = ["first_name", "last_name", "email", "phone_number"]
+    ordering_fields = ["created_at", "first_name", "last_name"]
 
     @transaction.atomic
     def perform_create(self, serializer):
