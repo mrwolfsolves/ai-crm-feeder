@@ -5,6 +5,9 @@ import requests
 import re
 import json
 from rest_framework.exceptions import APIException
+import logging
+
+logger = logging.getLogger("clientes")
 
 load_dotenv()
 
@@ -32,16 +35,27 @@ def enviar_cliente(payload):
     try:
         response = requests.post(espocrm_url, json=payload, headers=headers, timeout=10)
     except requests.exceptions.RequestException:
+        logger.error(f"No se pudo conectar con EspoCRM para el cliente {payload.get('emailAddress')}")
         raise APIException("No se pudo conectar con EspoCRM. Verifica que el servicio esté disponible.")
+
+    if response.status_code == 200:
+        logger.info(f"Cliente enviado a EspoCRM correctamente: {payload.get('emailAddress')}")
+    else:
+        logger.warning(f"EspoCRM respondió {response.status_code} para el cliente {payload.get('emailAddress')}")
 
     return response
 
-def check_repeated_char(word):
-    patron = r"(.)\1{2,}"
-    if word:
-        return bool(re.search(patron, word))
-    else:
+def tiene_anomalia(texto):
+    """
+    Detecta si un campo de texto tiene un posible error de tecleo:
+    letras repetidas en exceso, o caracteres que no deberían estar
+    en un nombre/dirección (símbolos, signos sueltos, etc.).
+    """
+    if not texto:
         return False
+    patron_repetidos = r"(.)\1{2,}"
+    patron_caracteres_invalidos = r"[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\-']"
+    return bool(re.search(patron_repetidos, texto)) or bool(re.search(patron_caracteres_invalidos, texto))
 
 def corregir_campos_con_ia(campos):
     """
@@ -59,8 +73,9 @@ def corregir_campos_con_ia(campos):
     prompt = f"""Recibirás un JSON con campos de texto que pueden tener errores de tecleo. Corrige cada valor aplicando SOLO estas reglas:
 
 1. Si una letra está repetida de forma excesiva (3 o más veces seguidas) por error de tecleo, colapsa la repetición a la forma normal de la palabra. Ejemplo: "Valdezzzzzzzzzzzz" -> "Valdez".
-2. Pon cada valor en formato Título: la primera letra de cada palabra en mayúscula, y TODAS las demás letras de esa palabra en minúscula, sin importar cómo estén escritas en el texto original. Ejemplo: "ValdeZZZZZZZZZZZZZzzz" -> "Valdez". "baja californiaaaaaaaaaa" -> "Baja California".
-3. No agregues ni quites espacios que no sean parte de la corrección. No inventes información nueva.
+2. Si hay símbolos o caracteres que claramente no deberían estar ahí (ej. "Mart[inez"), corrígelos para formar la palabra correcta más probable según el contexto (nombres, apellidos, ciudades o estados reales). Ejemplo: "Mart[inez" -> "Martínez".
+3. Pon cada valor en formato Título: la primera letra de cada palabra en mayúscula, y TODAS las demás letras de esa palabra en minúscula, sin importar cómo estén escritas en el texto original. Ejemplo: "ValdeZZZZZZZZZZZZZzzz" -> "Valdez". "baja californiaaaaaaaaaa" -> "Baja California".
+4. No agregues ni quites espacios que no sean parte de la corrección. No inventes información nueva.
 
 Responde ÚNICAMENTE con un JSON válido con exactamente las mismas llaves que recibiste, sin explicaciones ni comentarios adicionales.
 
@@ -76,6 +91,11 @@ JSON a corregir:
     except requests.exceptions.RequestException:
         raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
+
+    if "choices" not in data:
+        logger.error(f"Respuesta inesperada de OpenRouter: {data}")
+        raise APIException("El servicio de IA no respondió correctamente. Verifica la configuración o intenta más tarde.")
+
     contenido = data['choices'][0]['message']['content'].strip()
 
     if contenido.startswith("```"):
@@ -84,7 +104,13 @@ JSON a corregir:
             contenido = contenido[4:]
         contenido = contenido.strip()
 
-    return json.loads(contenido)
+    try:
+        resultado = json.loads(contenido)
+    except json.JSONDecodeError:
+        logger.error(f"La IA regresó un JSON inválido al corregir campos: {contenido}")
+        raise APIException("La IA no pudo procesar la corrección, intenta de nuevo.")
+    logger.info(f"Corrección IA aplicada a campos: {list(campos.keys())}")
+    return resultado
 
 def extraer_datos_con_ia(texto):
     openrouter_url = os.getenv("openrouter_url")
@@ -130,6 +156,11 @@ Texto a analizar:
     except requests.exceptions.RequestException:
         raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
+
+    if "choices" not in data:
+        logger.error(f"Respuesta inesperada de OpenRouter: {data}")
+        raise APIException("El servicio de IA no respondió correctamente. Verifica la configuración o intenta más tarde.")
+
     contenido = data['choices'][0]['message']['content'].strip()
 
     if contenido.startswith("```"):
@@ -138,6 +169,10 @@ Texto a analizar:
             contenido = contenido[4:]
         contenido = contenido.strip()
 
-    datos_extraidos = json.loads(contenido)
+    try:
+        datos_extraidos = json.loads(contenido)
+    except json.JSONDecodeError:
+        logger.error(f"La IA regresó un JSON inválido al extraer datos: {contenido}")
+        raise APIException("La IA no pudo extraer los datos del texto, intenta reformularlo o inténtalo de nuevo.")
 
     return datos_extraidos

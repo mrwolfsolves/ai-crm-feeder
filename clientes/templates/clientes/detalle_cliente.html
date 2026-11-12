@@ -1,0 +1,64 @@
+{% extends "clientes/base.html" %}
+{% block title %}{{ cliente.first_name }} {{ cliente.last_name }} — CRM Feeder{% endblock %}
+{% block content %}
+    <a href="{% url 'listar_clientes' %}" class="btn btn-link mb-3 ps-0">
+        <i class="bi bi-arrow-left"></i> Volver a la lista
+    </a>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-3">
+                <i class="bi bi-person-circle text-primary"></i>
+                {{ cliente.first_name }} {{ cliente.last_name }}
+            </h1>
+
+            <div class="row g-3">
+                <div class="col-md-6"><strong>Email:</strong> {{ cliente.email }}</div>
+                <div class="col-md-6"><strong>Teléfono:</strong> {{ cliente.phone_number }}</div>
+                <div class="col-md-6"><strong>Dirección:</strong> {{ cliente.street }}, {{ cliente.city }}, {{ cliente.state }}, {{ cliente.postal_code }}, {{ cliente.country }}</div>
+                <div class="col-md-6"><strong>Capturado el:</strong> {{ cliente.created_at|date:"d/m/Y H:i" }}</div>
+                <div class="col-md-6">
+                    <strong>Enviado a CRM:</strong>
+                    {% if cliente.enviado_a_crm %}
+                        <span class="badge bg-success"><i class="bi bi-check-lg"></i> Sí</span>
+                    {% else %}
+                        <span class="badge bg-danger"><i class="bi bi-x-lg"></i> No</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if cliente.correccion_aplicada %}
+    <div class="card shadow-sm border-info">
+        <div class="card-body p-4">
+            <h2 class="h5 mb-3"><i class="bi bi-magic text-info"></i> Corrección aplicada por IA</h2>
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Antes</th>
+                        <th>Después</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campo, valor_original in cliente.valores_originales.items %}
+                    <tr>
+                        <td class="text-capitalize">{{ campo }}</td>
+                        <td class="text-danger text-decoration-line-through">{{ valor_original }}</td>
+                        <td class="text-success fw-bold">
+                            {% if campo == "first_name" %}{{ cliente.first_name }}
+                            {% elif campo == "last_name" %}{{ cliente.last_name }}
+                            {% elif campo == "street" %}{{ cliente.street }}
+                            {% elif campo == "city" %}{{ cliente.city }}
+                            {% elif campo == "state" %}{{ cliente.state }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
