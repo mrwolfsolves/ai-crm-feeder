@@ -9,6 +9,8 @@
     <div class="container mt-5">
         <h1 class="mb-4">Captura Rápida (pega el texto del cliente)</h1>
 
+        <a href="{% url 'listar_clientes' %}" class="btn btn-link mb-3">← Volver a la lista</a>
+
         {% if error %}
             <div class="alert alert-danger" role="alert">
                 {{ error }}
