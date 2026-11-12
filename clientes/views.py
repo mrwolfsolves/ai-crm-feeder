@@ -7,6 +7,8 @@ from rest_framework.exceptions import APIException
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+import csv
+from django.http import HttpResponse
 
 
 def capturar_cliente(request):
@@ -139,3 +141,26 @@ def captura_rapida(request):
 def detalle_cliente(request, pk):
     cliente = get_object_or_404(Cliente, pk=pk)
     return render(request, "clientes/detalle_cliente.html", {"cliente": cliente})
+
+def exportar_clientes_csv(request):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="clientes.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Nombre", "Apellido", "Email", "Teléfono", "Calle", "Ciudad",
+        "Estado", "Código Postal", "País", "Fecha de captura",
+        "Enviado a CRM", "Corrección IA aplicada",
+    ])
+
+    for cliente in Cliente.objects.all().order_by("-created_at"):
+        writer.writerow([
+            cliente.first_name, cliente.last_name, cliente.email,
+            cliente.phone_number, cliente.street, cliente.city,
+            cliente.state, cliente.postal_code, cliente.country,
+            cliente.created_at.strftime("%d/%m/%Y %H:%M"),
+            "Sí" if cliente.enviado_a_crm else "No",
+            "Sí" if cliente.correccion_aplicada else "No",
+        ])
+
+    return response
