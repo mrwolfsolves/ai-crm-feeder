@@ -8,6 +8,13 @@
 <body class="bg-light">
     <div class="container mt-5">
         <h1 class="mb-4">Captura Rápida (pega el texto del cliente)</h1>
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             <textarea class="form-control mb-3" name="texto_crudo" rows="8" placeholder="Pega aquí el correo, mensaje o notas del cliente..." required></textarea>

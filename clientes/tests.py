@@ -1,6 +1,8 @@
 from django.test import TestCase
 from .models import Cliente
 from .services import check_repeated_char, mapear_cliente
+from unittest.mock import patch, Mock
+from .services import corregir_campos_con_ia, extraer_datos_con_ia
 
 
 class CheckRepeatedCharTests(TestCase):
@@ -57,3 +59,50 @@ class MapearClienteTests(TestCase):
             "addressState", "addressCountry"
         }
         self.assertEqual(set(payload.keys()), llaves_esperadas)
+
+class CorregirCamposConIATests(TestCase):
+    @patch("clientes.services.requests.post")
+    def test_corrige_campos_correctamente(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "choices": [
+                {"message": {"content": '{"last_name": "Valdez"}'}}
+            ]
+        }
+        mock_post.return_value = mock_response
+
+        resultado = corregir_campos_con_ia({"last_name": "Valdezzzzzzzzzzzz"})
+
+        self.assertEqual(resultado, {"last_name": "Valdez"})
+        mock_post.assert_called_once()
+
+    @patch("clientes.services.requests.post")
+    def test_maneja_respuesta_envuelta_en_markdown(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "choices": [
+                {"message": {"content": '```json\n{"city": "Tijuana"}\n```'}}
+            ]
+        }
+        mock_post.return_value = mock_response
+
+        resultado = corregir_campos_con_ia({"city": "tijuanaaaaaa"})
+
+        self.assertEqual(resultado, {"city": "Tijuana"})
+
+
+class ExtraerDatosConIATests(TestCase):
+    @patch("clientes.services.requests.post")
+    def test_extrae_datos_correctamente(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "choices": [
+                {"message": {"content": '{"first_name": "Leonardo", "last_name": "Valdez", "email": "", "phone_number": "", "street": "", "city": "", "state": "", "postal_code": "", "country": ""}'}}
+            ]
+        }
+        mock_post.return_value = mock_response
+
+        resultado = extraer_datos_con_ia("Me llamo Leonardo Valdez")
+
+        self.assertEqual(resultado["first_name"], "Leonardo")
+        self.assertEqual(resultado["last_name"], "Valdez")

@@ -5,6 +5,9 @@ import requests
 import re
 import json
 from rest_framework.exceptions import APIException
+import logging
+
+logger = logging.getLogger("clientes")
 
 load_dotenv()
 
@@ -32,7 +35,13 @@ def enviar_cliente(payload):
     try:
         response = requests.post(espocrm_url, json=payload, headers=headers, timeout=10)
     except requests.exceptions.RequestException:
+        logger.error(f"No se pudo conectar con EspoCRM para el cliente {payload.get('emailAddress')}")
         raise APIException("No se pudo conectar con EspoCRM. Verifica que el servicio esté disponible.")
+
+    if response.status_code == 200:
+        logger.info(f"Cliente enviado a EspoCRM correctamente: {payload.get('emailAddress')}")
+    else:
+        logger.warning(f"EspoCRM respondió {response.status_code} para el cliente {payload.get('emailAddress')}")
 
     return response
 
@@ -76,6 +85,11 @@ JSON a corregir:
     except requests.exceptions.RequestException:
         raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
+
+    if "choices" not in data:
+        logger.error(f"Respuesta inesperada de OpenRouter: {data}")
+        raise APIException("El servicio de IA no respondió correctamente. Verifica la configuración o intenta más tarde.")
+
     contenido = data['choices'][0]['message']['content'].strip()
 
     if contenido.startswith("```"):
@@ -84,7 +98,13 @@ JSON a corregir:
             contenido = contenido[4:]
         contenido = contenido.strip()
 
-    return json.loads(contenido)
+    try:
+        resultado = json.loads(contenido)
+    except json.JSONDecodeError:
+        logger.error(f"La IA regresó un JSON inválido al corregir campos: {contenido}")
+        raise APIException("La IA no pudo procesar la corrección, intenta de nuevo.")
+    logger.info(f"Corrección IA aplicada a campos: {list(campos.keys())}")
+    return resultado
 
 def extraer_datos_con_ia(texto):
     openrouter_url = os.getenv("openrouter_url")
@@ -130,6 +150,11 @@ Texto a analizar:
     except requests.exceptions.RequestException:
         raise APIException("No se pudo conectar con el servicio de IA. Intenta de nuevo en unos momentos.")
     data = response.json()
+
+    if "choices" not in data:
+        logger.error(f"Respuesta inesperada de OpenRouter: {data}")
+        raise APIException("El servicio de IA no respondió correctamente. Verifica la configuración o intenta más tarde.")
+
     contenido = data['choices'][0]['message']['content'].strip()
 
     if contenido.startswith("```"):
@@ -138,6 +163,10 @@ Texto a analizar:
             contenido = contenido[4:]
         contenido = contenido.strip()
 
-    datos_extraidos = json.loads(contenido)
+    try:
+        datos_extraidos = json.loads(contenido)
+    except json.JSONDecodeError:
+        logger.error(f"La IA regresó un JSON inválido al extraer datos: {contenido}")
+        raise APIException("La IA no pudo extraer los datos del texto, intenta reformularlo o inténtalo de nuevo.")
 
     return datos_extraidos

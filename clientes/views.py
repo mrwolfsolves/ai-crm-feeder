@@ -115,7 +115,10 @@ def listar_clientes(request):
 def captura_rapida(request):
     if request.method == "POST":
         texto = request.POST.get("texto_crudo")
-        datos = extraer_datos_con_ia(texto)
-        return render(request, "clientes/captura_cliente.html", {"datos": datos})
+        try:
+            datos = extraer_datos_con_ia(texto)
+            return render(request, "clientes/captura_cliente.html", {"datos": datos})
+        except Exception as e:
+            return render(request, "clientes/captura_rapida.html", {"error": str(e)})
 
     return render(request, "clientes/captura_rapida.html")

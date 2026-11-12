@@ -226,3 +226,5 @@ staticfiles/
 # SO / Editore
 .DS_Store
 Thumbs.db
+
+logs/
