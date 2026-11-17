@@ -12,6 +12,16 @@
                 <div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Error: {{ error }}</div>
             {% endif %}
 
+            {% if datos and (not datos.first_name or not datos.email) %}
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div>
+                    La IA no pudo extraer {% if not datos.first_name and not datos.email %}el nombre ni el correo{% elif not datos.first_name %}el nombre{% else %}el correo{% endif %}
+                    del texto. Revisa y completa los campos antes de enviar.
+                </div>
+            </div>
+            {% endif %}
+
             <form method="POST">
                 {% csrf_token %}
                 <div class="row g-3">

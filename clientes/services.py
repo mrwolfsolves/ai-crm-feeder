@@ -122,7 +122,7 @@ def extraer_datos_con_ia(texto):
         "Content-Type": "application/json",
     }
 
-    prompt = f"""Extrae los siguientes datos de cliente del texto proporcionado y responde ÚNICAMENTE con un JSON válido, sin explicaciones ni texto adicional, usando exactamente estas llaves:
+    prompt = f"""Extrae los datos de UN SOLO cliente del texto proporcionado y responde ÚNICAMENTE con un JSON válido, sin explicaciones ni texto adicional, usando exactamente estas llaves:
 
 {{
     "first_name": "",
@@ -136,7 +136,11 @@ def extraer_datos_con_ia(texto):
     "country": ""
 }}
 
-Si algún dato no se encuentra en el texto, deja el valor como una cadena vacía "".
+Reglas:
+1. Si algún dato no se encuentra en el texto, deja el valor como una cadena vacía "". No inventes información.
+2. Si el nombre completo tiene varias palabras (ej. "Juan Pérez García"), usa la primera palabra como first_name y el resto como last_name.
+3. Si el texto menciona a más de un cliente, extrae SOLO los datos del primero que aparezca.
+4. El texto puede estar en español o en inglés; extrae los datos sin importar el idioma.
 
 Texto a analizar:
 {texto}"""
@@ -174,5 +178,14 @@ Texto a analizar:
     except json.JSONDecodeError:
         logger.error(f"La IA regresó un JSON inválido al extraer datos: {contenido}")
         raise APIException("La IA no pudo extraer los datos del texto, intenta reformularlo o inténtalo de nuevo.")
+
+    LLAVES_ESPERADAS = {
+        "first_name", "last_name", "email", "phone_number",
+        "street", "city", "state", "postal_code", "country",
+    }
+
+    if not isinstance(datos_extraidos, dict) or set(datos_extraidos.keys()) != LLAVES_ESPERADAS:
+        logger.error(f"La IA regresó llaves inesperadas al extraer datos: {datos_extraidos}")
+        raise APIException("La IA no pudo extraer los datos correctamente, intenta reformular el texto.")
 
     return datos_extraidos
