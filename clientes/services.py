@@ -176,7 +176,7 @@ Texto a analizar:
         contenido = contenido.strip()
 
     try:
-                datos_extraidos = json.loads(contenido)
+        datos_extraidos = json.loads(contenido)
     except json.JSONDecodeError:
         logger.error(f"La IA regresó un JSON inválido al extraer datos: {contenido}")
         raise APIException("La IA no pudo extraer los datos del texto, intenta reformularlo o inténtalo de nuevo.")
