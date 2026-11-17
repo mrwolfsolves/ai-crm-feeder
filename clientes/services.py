@@ -6,6 +6,9 @@ import re
 import json
 from rest_framework.exceptions import APIException
 import logging
+import io
+from pypdf import PdfReader
+from pypdf.errors import PdfReadError
 
 logger = logging.getLogger("clientes")
 
@@ -16,14 +19,13 @@ def mapear_cliente(cliente):
         "firstName": cliente.first_name,
         "lastName": cliente.last_name,
         "emailAddress": cliente.email,
-        "phoneNumber": cliente.phone_number,
+        "phoneNumber": normalizar_telefono(cliente.phone_number),
         "addressStreet": cliente.street,
         "addressPostalCode": cliente.postal_code,
         "addressCity": cliente.city,
         "addressState": cliente.state,
         "addressCountry": cliente.country
     }
-
     return payload
 
 def enviar_cliente(payload):
@@ -41,7 +43,7 @@ def enviar_cliente(payload):
     if response.status_code == 200:
         logger.info(f"Cliente enviado a EspoCRM correctamente: {payload.get('emailAddress')}")
     else:
-        logger.warning(f"EspoCRM respondió {response.status_code} para el cliente {payload.get('emailAddress')}")
+        logger.warning(f"EspoCRM respondió {response.status_code} para el cliente {payload.get('emailAddress')}: {response.text}")
 
     return response
 
@@ -176,3 +178,37 @@ Texto a analizar:
         raise APIException("La IA no pudo extraer los datos del texto, intenta reformularlo o inténtalo de nuevo.")
 
     return datos_extraidos
+
+def extraer_texto_de_pdf(archivo):
+    """
+    archivo: un InMemoryUploadedFile (request.FILES) o similar con método .read()
+    Devuelve el texto plano extraído de todas las páginas del PDF.
+    """
+    try:
+        lector = PdfReader(io.BytesIO(archivo.read()))
+    except PdfReadError:
+        raise APIException("El archivo no es un PDF válido o está dañado.")
+
+    texto = ""
+    for pagina in lector.pages:
+        texto += pagina.extract_text() or ""
+
+    if not texto.strip():
+        raise APIException("No se pudo extraer texto del PDF. Es posible que sea un documento escaneado (imagen) sin texto seleccionable.")
+
+    return texto
+
+def normalizar_telefono(numero, codigo_pais_default="52"):
+    """
+    Normaliza un número telefónico a formato internacional E.164 (+52...).
+    Si el número ya trae un '+', se asume que el usuario ya puso el código de país.
+    """
+    if not numero:
+        return numero
+
+    numero = numero.strip()
+    if numero.startswith("+"):
+        return numero
+
+    solo_digitos = re.sub(r"\D", "", numero)
+    return f"+{codigo_pais_default}{solo_digitos}"

@@ -12,11 +12,22 @@
                 </div>
             {% endif %}
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <textarea class="form-control mb-3" name="texto_crudo" rows="8" placeholder="Pega aquí el correo, mensaje o notas del cliente..." required></textarea>
+                <div class="mb-3">
+                    <label class="form-label">Pega el texto del cliente</label>
+                    <textarea class="form-control" name="texto_crudo" rows="6" placeholder="Ej. Hola, soy Juan Pérez, mi correo es..."></textarea>
+                </div>
+
+                <div class="text-center text-muted mb-3">— o —</div>
+
+                <div class="mb-3">
+                    <label class="form-label">Sube un PDF (cotización, formulario, etc.)</label>
+                    <input type="file" class="form-control" name="archivo_pdf" accept=".pdf">
+                </div>
+
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-stars"></i> Extraer datos con IA
+                    <i class="bi bi-magic"></i> Extraer datos con IA
                 </button>
             </form>
         </div>

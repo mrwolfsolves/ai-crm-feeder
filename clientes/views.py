@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 import csv
 from django.http import HttpResponse
+from .services import mapear_cliente, enviar_cliente, tiene_anomalia, corregir_campos_con_ia, extraer_datos_con_ia, extraer_texto_de_pdf
 
 
 def capturar_cliente(request):
@@ -81,7 +82,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
         campos_con_error = {
             campo: getattr(cliente, campo)
             for campo in campos_a_revisar
-            if check_repeated_char(getattr(cliente, campo))
+            if tiene_anomalia(getattr(cliente, campo))
         }
         if campos_con_error:
             cliente.valores_originales = campos_con_error
@@ -164,3 +165,20 @@ def exportar_clientes_csv(request):
         ])
 
     return response
+
+def captura_rapida(request):
+    if request.method == "POST":
+        archivo = request.FILES.get("archivo_pdf")
+        texto = request.POST.get("texto_crudo", "").strip()
+
+        try:
+            if archivo:
+                texto = extraer_texto_de_pdf(archivo)
+            elif not texto:
+                return render(request, "clientes/captura_rapida.html", {"error": "Debes pegar texto o subir un PDF."})
+
+            datos = extraer_datos_con_ia(texto)
+            return render(request, "clientes/captura_cliente.html", {"datos": datos})
+        except Exception as e:
+            return render(request, "clientes/captura_rapida.html", {"error": str(e)})
+    return render(request, "clientes/captura_rapida.html")
