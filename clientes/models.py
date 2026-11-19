@@ -16,6 +16,10 @@ class Cliente(models.Model):
     enviado_a_crm = models.BooleanField(default=False)
     correccion_aplicada = models.BooleanField(default=False)
     valores_originales = models.JSONField(null=True, blank=True)
+    company = models.CharField(max_length=150, blank=True)
+    position = models.CharField(max_length=100, blank=True)
+    products_of_interest = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

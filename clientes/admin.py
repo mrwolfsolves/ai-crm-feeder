@@ -5,9 +5,9 @@ from .models import Cliente
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
     list_display = (
-        "first_name", "last_name", "email", "city", "state",
+        "first_name", "last_name", "email", "company", "city", "state",
         "enviado_a_crm", "correccion_aplicada", "created_at",
     )
     list_filter = ("enviado_a_crm", "correccion_aplicada", "city", "state")
-    search_fields = ("first_name", "last_name", "email", "phone_number")
+    search_fields = ("first_name", "last_name", "email", "phone_number", "company")
     readonly_fields = ("created_at", "valores_originales")

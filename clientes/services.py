@@ -15,6 +15,11 @@ logger = logging.getLogger("clientes")
 load_dotenv()
 
 def mapear_cliente(cliente):
+    descripcion = "\n".join(filter(None, [
+        f"Productos de interés: {cliente.products_of_interest}" if cliente.products_of_interest else "",
+        f"Observaciones: {cliente.notes}" if cliente.notes else "",
+    ]))
+
     payload = {
         "firstName": cliente.first_name,
         "lastName": cliente.last_name,
@@ -24,7 +29,10 @@ def mapear_cliente(cliente):
         "addressPostalCode": cliente.postal_code,
         "addressCity": cliente.city,
         "addressState": cliente.state,
-        "addressCountry": cliente.country
+        "addressCountry": cliente.country,
+        "accountName": cliente.company,
+        "title": cliente.position,
+        "description": descripcion,
     }
     return payload
 
@@ -135,7 +143,11 @@ def extraer_datos_con_ia(texto):
     "city": "",
     "state": "",
     "postal_code": "",
-    "country": ""
+    "country": "",
+    "company": "",
+    "position": "",
+    "products_of_interest": "",
+    "notes": ""
 }}
 
 Reglas:
@@ -143,6 +155,10 @@ Reglas:
 2. Si el nombre completo tiene varias palabras (ej. "Juan Pérez García"), usa la primera palabra como first_name y el resto como last_name.
 3. Si el texto menciona a más de un cliente, extrae SOLO los datos del primero que aparezca.
 4. El texto puede estar en español o en inglés; extrae los datos sin importar el idioma.
+5. "company" es el nombre de la empresa u organización del cliente, si se menciona.
+6. "position" es el cargo o puesto del cliente dentro de su empresa (ej. "Gerente de compras", "Director de TI").
+7. "products_of_interest" son los productos, servicios o soluciones que el cliente menciona que le interesan o está buscando.
+8. "notes" son observaciones generales relevantes que no encajen en los demás campos (ej. "urge cotización para esta semana").
 
 Texto a analizar:
 {texto}"""
@@ -184,6 +200,7 @@ Texto a analizar:
     LLAVES_ESPERADAS = {
         "first_name", "last_name", "email", "phone_number",
         "street", "city", "state", "postal_code", "country",
+        "company", "position", "products_of_interest", "notes",
     }
 
     if not isinstance(datos_extraidos, dict) or set(datos_extraidos.keys()) != LLAVES_ESPERADAS:

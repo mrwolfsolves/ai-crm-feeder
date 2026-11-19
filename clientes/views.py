@@ -26,11 +26,15 @@ def capturar_cliente(request):
                     state=request.POST.get("state"),
                     postal_code=request.POST.get("postal_code"),
                     country=request.POST.get("country"),
+                    company=request.POST.get("company", ""),
+                    position=request.POST.get("position", ""),
+                    products_of_interest=request.POST.get("products_of_interest", ""),
+                    notes=request.POST.get("notes", ""),
                 )
                 cliente.full_clean()
                 cliente.save()
 
-                campos_a_revisar = ["first_name", "last_name", "street", "city", "state"]
+                campos_a_revisar = ["first_name", "last_name", "street", "city", "state", "company"]
                 campos_con_error = {
                     campo: getattr(cliente, campo)
                     for campo in campos_a_revisar
@@ -78,7 +82,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
         serializer.save()
         cliente = serializer.instance
 
-        campos_a_revisar = ["first_name", "last_name", "street", "city", "state"]
+        campos_a_revisar = ["first_name", "last_name", "street", "city", "state", "company"]
         campos_con_error = {
             campo: getattr(cliente, campo)
             for campo in campos_a_revisar
