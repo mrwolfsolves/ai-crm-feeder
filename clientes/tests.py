@@ -61,7 +61,7 @@ class MapearClienteTests(TestCase):
         llaves_esperadas = {
             "firstName", "lastName", "emailAddress", "phoneNumber",
             "addressStreet", "addressPostalCode", "addressCity",
-            "addressState", "addressCountry"
+            "addressState", "addressCountry", "accountName", "title", "description",
         }
         self.assertEqual(set(payload.keys()), llaves_esperadas)
 
@@ -102,7 +102,7 @@ class ExtraerDatosConIATests(TestCase):
         mock_response = Mock()
         mock_response.json.return_value = {
             "choices": [
-                {"message": {"content": '{"first_name": "Leonardo", "last_name": "Valdez", "email": "", "phone_number": "", "street": "", "city": "", "state": "", "postal_code": "", "country": ""}'}}
+                {"message": {"content": '{"first_name": "Leonardo", "last_name": "Valdez", "email": "", "phone_number": "", "street": "", "city": "", "state": "", "postal_code": "", "country": "", "company": "", "position": "", "products_of_interest": "", "notes": ""}'}}
             ]
         }
         mock_post.return_value = mock_response

@@ -62,6 +62,22 @@
                         <label class="form-label">País</label>
                         <input type="text" class="form-control" name="country" value="{{ datos.country|default:'' }}" required>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Empresa</label>
+                        <input type="text" class="form-control" name="company" value="{{ datos.company|default:'' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cargo</label>
+                        <input type="text" class="form-control" name="position" value="{{ datos.position|default:'' }}">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Productos de interés</label>
+                        <textarea class="form-control" name="products_of_interest" rows="2">{{ datos.products_of_interest|default:'' }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-control" name="notes" rows="2">{{ datos.notes|default:'' }}</textarea>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-4">
                     <i class="bi bi-cloud-upload"></i> Capturar cliente

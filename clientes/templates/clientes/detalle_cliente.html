@@ -17,6 +17,8 @@
                 <div class="col-md-6"><strong>Teléfono:</strong> {{ cliente.phone_number }}</div>
                 <div class="col-md-6"><strong>Dirección:</strong> {{ cliente.street }}, {{ cliente.city }}, {{ cliente.state }}, {{ cliente.postal_code }}, {{ cliente.country }}</div>
                 <div class="col-md-6"><strong>Capturado el:</strong> {{ cliente.created_at|date:"d/m/Y H:i" }}</div>
+                <div class="col-md-6"><strong>Empresa:</strong> {{ cliente.company|default:"—" }}</div>
+                <div class="col-md-6"><strong>Cargo:</strong> {{ cliente.position|default:"—" }}</div>
                 <div class="col-md-6">
                     <strong>Enviado a CRM:</strong>
                     {% if cliente.enviado_a_crm %}
@@ -26,8 +28,20 @@
                     {% endif %}
                 </div>
             </div>
+
+                {% if cliente.products_of_interest or cliente.notes %}
+                <hr class="my-3">
+                <div class="row g-3">
+                    {% if cliente.products_of_interest %}
+                    <div class="col-12"><strong>Productos de interés:</strong> {{ cliente.products_of_interest }}</div>
+                    {% endif %}
+                    {% if cliente.notes %}
+                    <div class="col-12"><strong>Observaciones:</strong> {{ cliente.notes }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
     {% if cliente.correccion_aplicada %}
     <div class="card shadow-sm border-info">
@@ -52,6 +66,7 @@
                             {% elif campo == "street" %}{{ cliente.street }}
                             {% elif campo == "city" %}{{ cliente.city }}
                             {% elif campo == "state" %}{{ cliente.state }}
+                            {% elif campo == "company" %}{{ cliente.company }}
                             {% endif %}
                         </td>
                     </tr>
